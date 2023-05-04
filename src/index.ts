@@ -1,22 +1,29 @@
-import express from 'express';
+import IORedis from 'ioredis';
 import mongoose from 'mongoose';
+import App from './App';
+import JobProcessor from './JobProcessor';
 import { apiPort, mongoseUrl } from './config';
-import patient from './controller/patient';
-import databaseSeeds from './dbSeeds';
-
-const app = express();
-
-console.log({ mongoseUrl });
-
-mongoose.connection.on('error', (error) => {
-  console.error(error);
-});
-
-app.use('*', patient);
+import PatientController from './controller/PatientController';
 
 (async () => {
-  await mongoose.connect(mongoseUrl);
-  await databaseSeeds();
+  await mongoose.connect(mongoseUrl, {
+    dbName: 'hospital',
+  });
 
-  app.listen(apiPort);
+  mongoose.connection.on('error', (error) => {
+    console.error(error);
+  });
+
+  const redis = new IORedis();
+  const queues = {};
+
+  const jobProcessor = new JobProcessor({ redis, queues });
+
+  const app = new App({
+    controllers: [new PatientController({ queues })],
+    port: apiPort,
+  });
+
+  await jobProcessor.start();
+  app.listen();
 })();

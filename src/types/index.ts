@@ -1,16 +1,25 @@
-export default interface IUser {
+import { Queue } from 'bullmq';
+import express from 'express';
+
+export interface IUser {
   phone: string;
   name: string;
 }
 
-export default interface IDoctor {
+export interface IDoctor {
   name: string;
   spec: string;
-  slots: Array<Date>;
+  slots: Array<{
+    user_id: number;
+    date_time: Date;
+    is_free: boolean;
+  }>;
 }
 
-export default interface ISlot {
-  doctor_id: number;
-  user_id: number;
-  slot: Date;
+export interface IExpressController {
+  path: string;
+  router: express.Router;
+  queues: Record<string, Queue>;
+
+  intializeRoutes: () => void;
 }
