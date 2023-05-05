@@ -9,11 +9,8 @@ export interface IUser {
 export interface IDoctor {
   name: string;
   spec: string;
-  slots: Array<{
-    user_id: number;
-    date_time: Date;
-    is_free: boolean;
-  }>;
+  slots: Array<Slot>;
+  earliest_entry: Date;
 }
 
 export interface IExpressController {
@@ -23,3 +20,10 @@ export interface IExpressController {
 
   intializeRoutes: () => void;
 }
+
+export type Slot = {
+  user_id?: number | null;
+  date_time: Date;
+  is_free: boolean;
+  is_notified: boolean;
+};

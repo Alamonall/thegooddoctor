@@ -1,6 +1,5 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import loggerMiddleware from './middleware/logger.middleware';
 import { IExpressController } from './types';
 
 export default class App {
@@ -23,14 +22,12 @@ export default class App {
 
   public initMiddlewares() {
     this.app.use(bodyParser.json());
-    this.app.use(loggerMiddleware);
   }
 
   private initializeControllers(controllers: Array<IExpressController>) {
     controllers.forEach((controller: IExpressController) => {
-      const route = `/api/v1${controller.path}`;
-      this.app.use(route, controller.router);
-      console.log(`init route: ${route}`);
+      this.app.use(controller.path, controller.router);
+      console.log(`init route: ${controller.path}`);
     });
   }
 

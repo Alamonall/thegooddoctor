@@ -1,17 +1,19 @@
 import { Queue } from 'bullmq';
 import express, { Request, Response } from 'express';
+import loggerMiddleware from '../middleware/logger.middleware';
 import Doctor from '../model/Doctor';
 import User from '../model/User';
 import { IExpressController } from '../types';
 
 export default class PatientController implements IExpressController {
-  path = '/patient';
+  path = '/api/v1/patient';
   router = express.Router();
   queues: Record<string, Queue>;
 
   constructor({ queues }: { queues: Record<string, Queue> }) {
     this.queues = queues;
     this.intializeRoutes();
+    this.router.use(loggerMiddleware);
   }
 
   intializeRoutes() {
@@ -58,12 +60,20 @@ export default class PatientController implements IExpressController {
     }
 
     const slotToUpdate = {
-      ...doctor.slots[requestSlotIndex],
+      ...requestedSlot,
       is_free: false,
       user_id: userId,
     };
 
-    console.debug({ msg: 'slot_to_update', slotToUpdate });
+    if (doctor.earliest_entry == null || doctor.earliest_entry > slot) {
+      doctor.earliest_entry = slot;
+    }
+
+    console.debug({
+      msg: 'slot_to_update',
+      slotToUpdate,
+      earliestEntry: doctor.earliest_entry,
+    });
 
     doctor.slots[requestSlotIndex] = slotToUpdate;
 

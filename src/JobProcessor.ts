@@ -18,18 +18,22 @@ export default class JobProcessor {
     this.queues = queues;
     this.workers = {};
     this.redis = redis;
+    this.init();
   }
 
-  init() {
+  private init() {
+    const connection = this.redis;
     this.queues[NOTIFY_USER] = new Queue(NOTIFY_USER, {
       defaultJobOptions: {
         removeOnComplete: 100,
         removeOnFail: 100,
       },
-      connection: this.redis,
+      connection,
     });
 
-    this.workers[NOTIFY_USER] = new Worker(NOTIFY_USER, notifyUser);
+    this.workers[NOTIFY_USER] = new Worker(NOTIFY_USER, notifyUser, {
+      connection,
+    });
   }
 
   async start() {

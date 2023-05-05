@@ -1,16 +1,19 @@
 import Doctor from './model/Doctor';
 import User from './model/User';
+import { Slot } from './types';
 
-export default async function databaseSeeds() {
+export default async function dbSeeds() {
   console.log('starting to seed');
-  const slotStub = {
-    date_time: '2023-05-10 00:00',
+  const slotStub: Slot = {
+    date_time: new Date('2023-05-10 00:00'),
     is_free: true,
     user_id: null,
+    is_notified: false,
   };
   const doctorHaus = new Doctor({
     name: 'Haus',
     spec: 'Therapist',
+    earliest_entry: null,
     slots: [
       { ...slotStub, date_time: '2023-05-10 9:00' },
       { ...slotStub, date_time: '2023-05-10 9:30' },
@@ -43,6 +46,7 @@ export default async function databaseSeeds() {
   const doctorGriffin = new Doctor({
     name: 'Bykov',
     spec: 'Surgeon',
+    earliest_entry: null,
     slots: [
       { ...slotStub, date_time: '2023-05-10 13:00' },
       { ...slotStub, date_time: '2023-05-10 13:30' },
