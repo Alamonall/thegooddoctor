@@ -42,7 +42,7 @@ export default class JobProcessor {
       {},
       {
         repeat: {
-          every: 1000 * 60 * 60,
+          every: 1000 * 60 * 1,
           limit: 100,
         },
       },

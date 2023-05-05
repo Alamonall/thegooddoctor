@@ -3,7 +3,7 @@ import User from './model/User';
 import { Slot } from './types';
 
 export default async function dbSeeds() {
-  console.log('starting to seed');
+  console.log('start seeds');
   const slotStub: Slot = {
     date_time: new Date('2023-05-10 00:00'),
     is_free: true,
@@ -96,5 +96,5 @@ export default async function dbSeeds() {
   await userOldGuy.save();
   await userWoman.save();
 
-  console.log('completed seeds');
+  console.log('complete seeds');
 }

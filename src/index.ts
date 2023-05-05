@@ -16,7 +16,7 @@ import dbSeeds from './dbSeeds';
     console.error(error);
   });
 
-  const redis = new IORedis();
+  const redis = new IORedis({ maxRetriesPerRequest: null });
   const queues = {};
 
   const jobProcessor = new JobProcessor({ redis, queues });

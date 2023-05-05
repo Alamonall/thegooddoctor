@@ -7,18 +7,21 @@ export default async function notifyUser(): Promise<void> {
   const date: Date = new Date(new Date().setDate(new Date().getDate() + 1));
   console.log({ date });
   const doctors = await Doctor.find({
-    erliest_entry: {
+    earliest_entry: {
       $gte: date,
     },
   }).exec();
 
+  console.log({ doctors });
   doctors.forEach((doctor) => {
     doctor.slots.forEach(async (slot) => {
+      console.log({ slot });
       if (!slot.user_id || slot.is_notified) {
         return;
       }
       const gandicup = new Date(slot.date_time).getTime() - Date.now();
 
+      console.debug({ gandicup, tow_hours: gandicup <= TWO_HOUR });
       if (gandicup <= TWO_HOUR) {
         const user = await User.findById(slot.user_id).exec();
 
@@ -33,6 +36,7 @@ export default async function notifyUser(): Promise<void> {
         });
       }
 
+      console.debug({ one_day: gandicup <= ONE_DAY });
       if (gandicup <= ONE_DAY) {
         const user = await User.findById(slot.user_id).exec();
 
