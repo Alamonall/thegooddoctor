@@ -25,5 +25,6 @@ export type Slot = {
   user_id?: number | null;
   date_time: Date;
   is_free: boolean;
-  is_notified: boolean;
+  is_notified_before_two_hours: boolean;
+  is_notified_before_one_day: boolean;
 };

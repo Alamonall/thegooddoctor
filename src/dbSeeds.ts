@@ -1,79 +1,31 @@
 import Doctor from './model/Doctor';
 import User from './model/User';
-import { Slot } from './types';
+import { generateSlots } from './utils';
 
 export default async function dbSeeds() {
   console.log('start seeds');
-  const slotStub: Slot = {
-    date_time: new Date('2023-05-10 00:00'),
-    is_free: true,
-    user_id: null,
-    is_notified: false,
-  };
+
+  await Doctor.deleteMany({});
+  await User.deleteMany({});
+  const doctorHausSlots = generateSlots(13, 4);
   const doctorHaus = new Doctor({
+    _id: '64562aa317adfccaa311cf97',
     name: 'Haus',
     spec: 'Therapist',
     earliest_entry: null,
-    slots: [
-      { ...slotStub, date_time: '2023-05-10 9:00' },
-      { ...slotStub, date_time: '2023-05-10 9:30' },
-      { ...slotStub, date_time: '2023-05-10 10:00' },
-      { ...slotStub, date_time: '2023-05-10 10:30' },
-      { ...slotStub, date_time: '2023-05-10 11:00' },
-      { ...slotStub, date_time: '2023-05-10 11:30' },
-      { ...slotStub, date_time: '2023-05-10 12:00' },
-      { ...slotStub, date_time: '2023-05-10 12:30' },
-      { ...slotStub, date_time: '2023-05-11 13:00' },
-      { ...slotStub, date_time: '2023-05-11 13:30' },
-      { ...slotStub, date_time: '2023-05-11 14:00' },
-      { ...slotStub, date_time: '2023-05-11 14:30' },
-      { ...slotStub, date_time: '2023-05-11 15:00' },
-      { ...slotStub, date_time: '2023-05-11 15:30' },
-      { ...slotStub, date_time: '2023-05-11 16:00' },
-      { ...slotStub, date_time: '2023-05-11 16:30' },
-      { ...slotStub, date_time: '2023-05-11 17:00' },
-      { ...slotStub, date_time: '2023-05-12 9:00' },
-      { ...slotStub, date_time: '2023-05-12 9:30' },
-      { ...slotStub, date_time: '2023-05-12 10:00' },
-      { ...slotStub, date_time: '2023-05-12 10:30' },
-      { ...slotStub, date_time: '2023-05-12 11:00' },
-      { ...slotStub, date_time: '2023-05-12 11:30' },
-      { ...slotStub, date_time: '2023-05-12 12:00' },
-      { ...slotStub, date_time: '2023-05-12 12:30' },
-    ],
+    slots: doctorHausSlots,
   });
 
+  const doctorGriffinSlots = generateSlots(13, 4);
   const doctorGriffin = new Doctor({
+    _id: '64562a67793c2860c3cc7c9b',
     name: 'Bykov',
     spec: 'Surgeon',
     earliest_entry: null,
-    slots: [
-      { ...slotStub, date_time: '2023-05-10 13:00' },
-      { ...slotStub, date_time: '2023-05-10 13:30' },
-      { ...slotStub, date_time: '2023-05-10 14:00' },
-      { ...slotStub, date_time: '2023-05-10 14:30' },
-      { ...slotStub, date_time: '2023-05-10 15:00' },
-      { ...slotStub, date_time: '2023-05-10 15:30' },
-      { ...slotStub, date_time: '2023-05-10 16:00' },
-      { ...slotStub, date_time: '2023-05-10 16:30' },
-      { ...slotStub, date_time: '2023-05-11 9:00' },
-      { ...slotStub, date_time: '2023-05-11 9:30' },
-      { ...slotStub, date_time: '2023-05-11 10:00' },
-      { ...slotStub, date_time: '2023-05-11 10:30' },
-      { ...slotStub, date_time: '2023-05-11 11:00' },
-      { ...slotStub, date_time: '2023-05-11 11:30' },
-      { ...slotStub, date_time: '2023-05-11 12:00' },
-      { ...slotStub, date_time: '2023-05-11 12:30' },
-      { ...slotStub, date_time: '2023-05-12 13:00' },
-      { ...slotStub, date_time: '2023-05-12 13:30' },
-      { ...slotStub, date_time: '2023-05-12 14:00' },
-      { ...slotStub, date_time: '2023-05-12 14:30' },
-      { ...slotStub, date_time: '2023-05-12 15:00' },
-      { ...slotStub, date_time: '2023-05-12 15:30' },
-      { ...slotStub, date_time: '2023-05-12 16:00' },
-      { ...slotStub, date_time: '2023-05-12 16:30' },
-    ],
+    slots: doctorGriffinSlots,
   });
+  await doctorGriffin.save();
+  await doctorHaus.save();
 
   const userWoman = new User({
     phone: '8 999 999 999 9',
@@ -86,15 +38,16 @@ export default async function dbSeeds() {
   });
 
   const userGuy = new User({
+    _id: '64562aa317adfccaa311cf9d',
     phone: '8 777 777 777 7',
     name: 'Alex',
   });
 
-  await doctorHaus.save();
-  await doctorGriffin.save();
   await userGuy.save();
   await userOldGuy.save();
   await userWoman.save();
 
-  console.log('complete seeds');
+  console.log({
+    msg: 'complete seeds',
+  });
 }
