@@ -9,7 +9,7 @@ export default async function notifyUser(
 ): Promise<void> {
   const { doctorId, slot_date_time, type } = job.data;
 
-  console.debug({
+  console.log({
     msg: `got_${job.name}`,
     job_id: job.id,
     job_name: job.name,
@@ -29,7 +29,6 @@ export default async function notifyUser(
   );
 
   const slot = doctor.slots[requestedSlotIndex];
-  console.debug({ msg: 'found_slot', slot });
 
   if (!slot) {
     throw new Error('Failed to find slot by date time');
@@ -78,7 +77,7 @@ export default async function notifyUser(
   doctor.earliest_entry = earliestEntry?.date_time ?? null;
   const updatedDoctor = await doctor.save();
 
-  console.debug({
+  console.log({
     msg: `complete_${job.name}`,
     job_name: job.name,
     job_id: job.id,

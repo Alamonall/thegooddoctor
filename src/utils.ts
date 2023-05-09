@@ -7,7 +7,6 @@ export function generateSlots(
 ): Array<Slot> {
   let iteration = 0;
   const slots = [];
-  console.log({ startsWith, hours });
   while (iteration != hours) {
     const hour = iteration + startsWith;
     const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${
@@ -19,10 +18,6 @@ export function generateSlots(
     const secondHalfAHour = new Date(
       `${date} ${hour > 9 ? hour : `0${hour}`}:30:00`,
     );
-    console.log({
-      firstHalfAHour: firstHalfAHour,
-      secondHalfAHour: secondHalfAHour,
-    });
     slots.push(
       {
         date_time: firstHalfAHour,

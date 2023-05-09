@@ -17,7 +17,6 @@ export default async function distributeNotifications(
     },
   });
 
-  console.log({ doctors });
   doctors.forEach((doctor) => {
     doctor.slots.forEach(async (slot: Slot) => {
       if (
@@ -33,7 +32,6 @@ export default async function distributeNotifications(
         const user = await User.findById(slot.user_id);
 
         if (!user) {
-          console.error('user not found');
           return;
         }
 

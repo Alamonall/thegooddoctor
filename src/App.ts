@@ -27,13 +27,13 @@ export default class App {
   private initializeControllers(controllers: Array<IExpressController>) {
     controllers.forEach((controller: IExpressController) => {
       this.app.use(controller.path, controller.router);
-      console.log(`init route: ${controller.path}`);
+      console.info(`init route: ${controller.path}`);
     });
   }
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.debug('listening on port ' + this.port);
+      console.info('listening on port ' + this.port);
     });
   }
 }

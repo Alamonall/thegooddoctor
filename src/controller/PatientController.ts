@@ -26,12 +26,6 @@ export default class PatientController implements IExpressController {
       doctor_id: doctorId,
       slot: rawSlotDate,
     } = req.body;
-    console.debug({
-      msg: 'got_post_book',
-      userId,
-      doctorId,
-      rawSlotDate,
-    });
 
     const slot = new Date(rawSlotDate);
 
@@ -50,7 +44,6 @@ export default class PatientController implements IExpressController {
     }
 
     const doctor = await Doctor.findById(doctorId);
-    console.debug({ msg: 'found_doctor', doctor });
 
     if (!doctor) {
       return res.status(404).send({ error_details: 'Doctor not found' });
@@ -59,12 +52,6 @@ export default class PatientController implements IExpressController {
     const requestSlotIndex = doctor.slots.findIndex(
       (doctorSlot) => doctorSlot.date_time.getTime() === slot.getTime(),
     );
-
-    console.debug({
-      msg: 'available_slot',
-      doctors_slot: doctor.slots[requestSlotIndex],
-      requested_slot_time: slot,
-    });
 
     if (requestSlotIndex === -1) {
       return res
@@ -91,16 +78,9 @@ export default class PatientController implements IExpressController {
       doctor.earliest_entry = slot;
     }
 
-    console.debug({
-      msg: 'slot_to_update',
-      slotToUpdate,
-      earliestEntry: doctor.earliest_entry,
-    });
-
     doctor.slots[requestSlotIndex] = slotToUpdate;
 
     await doctor.save();
-    console.debug({ msg: 'updated_doctor', doctor });
 
     res.status(200).json({
       message:

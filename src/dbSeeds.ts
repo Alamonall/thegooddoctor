@@ -3,8 +3,6 @@ import User from './model/User';
 import { generateSlots } from './utils';
 
 export default async function dbSeeds() {
-  console.log('start seeds');
-
   await Doctor.deleteMany({});
   await User.deleteMany({});
   const slots = [...generateSlots(0, 9, 12), ...generateSlots(1, 9, 12)];
@@ -47,8 +45,4 @@ export default async function dbSeeds() {
   await userGuy.save();
   await userOldGuy.save();
   await userWoman.save();
-
-  console.log({
-    msg: 'complete seeds',
-  });
 }
