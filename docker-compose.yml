@@ -2,17 +2,23 @@ version: '3.7'
 
 services:
   main:
-    image: node:19
+    image: node:16-slim
     environment:
       PORT: 3000
+      API_PORT: 3001
       ENVIRONMENT: local
       LOG_LEVEL: info
       MONGODB_URL: mongodb://admin:admin@mongo:27017
+      DB_NAME: hospital
+      REDIS_URI: redis://redis:6379
     stdin_open: true
     tty: true
-    ports: ['3000:3000']
+    volumes:
+      - .:/code
+    working_dir: /code
+    ports: ['3001:3001']
     command: './node_modules/.bin/ts-node-dev --transpile-only --exit-child src/index.ts'
-    depends_on: [ mongo ]
+    depends_on: [ mongo, mongo-express, redis ]
 
   mongo:
     image: mongo

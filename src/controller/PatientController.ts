@@ -35,13 +35,16 @@ export default class PatientController implements IExpressController {
 
     const slot = new Date(rawSlotDate);
 
+    if (slot.getTime() < Date.now()) {
+      return res.status(400).send({ error_details: 'Invalid time' });
+    }
+
     if (!slot.getMonth()) {
       return res.status(400).send({ error_details: 'Invalid Date' });
     }
 
     const user = await User.findById(userId);
 
-    console.debug({ msg: 'found_user', user });
     if (!user) {
       return res.status(404).send({ error_details: 'User not found' });
     }

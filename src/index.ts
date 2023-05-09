@@ -2,7 +2,7 @@ import IORedis from 'ioredis';
 import mongoose from 'mongoose';
 import App from './App';
 import JobProcessor from './JobProcessor';
-import { apiPort, mongoseUrl } from './config';
+import { apiPort, mongoseUrl, redisUri } from './config';
 import BullBoardController from './controller/BullBoardController';
 import PatientController from './controller/PatientController';
 import dbSeeds from './dbSeeds';
@@ -16,7 +16,7 @@ import dbSeeds from './dbSeeds';
     console.error(error);
   });
 
-  const redis = new IORedis({ maxRetriesPerRequest: null });
+  const redis = new IORedis(redisUri, { maxRetriesPerRequest: null });
   const queues = {};
 
   const jobProcessor = new JobProcessor({ redis, queues });

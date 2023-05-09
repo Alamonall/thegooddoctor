@@ -29,12 +29,6 @@ export default async function distributeNotifications(
       }
       const handicap = slot.date_time.getTime() - Date.now();
 
-      console.debug({
-        msg: 'hourly',
-        handicap,
-        two_hour: TWO_HOUR,
-        tow_hours: handicap <= TWO_HOUR,
-      });
       if (handicap >= 0 && handicap <= TWO_HOUR) {
         const user = await User.findById(slot.user_id);
 
@@ -50,19 +44,13 @@ export default async function distributeNotifications(
         };
 
         await queues[NOTIFY_USER].add(NOTIFY_USER, jobBody, {
-          jobId: `hourly_not ification_${doctor.id}_${slot.date_time}`,
+          jobId: `hourly_notification_${doctor.id}_${slot.date_time}`,
         });
         console.log({ msg: 'pushed_job_notify_user_by_2_hour' });
         return;
       }
 
-      console.debug({
-        msg: 'daily',
-        slot_hour: slot.date_time.getHours(),
-        cur_hour: new Date().getHours(),
-        condition: slot.date_time.getHours() == new Date().getHours(),
-      });
-      if (slot.date_time.getHours() == new Date().getHours()) {
+      if (slot.date_time.getHours() == dayAhed.getHours()) {
         const user = await User.findById(slot.user_id);
 
         if (!user) {

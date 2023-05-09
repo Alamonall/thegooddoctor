@@ -12,3 +12,9 @@ export const dbName = env
   .default('hospital')
   .required()
   .asString();
+
+export const redisUri = env
+  .get('REDIS_URI')
+  .default('redis://redis:6379')
+  .required()
+  .asString();
