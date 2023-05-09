@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=builder --chown=node:node /builder/dist .
 RUN chown node:node /app
 USER node
-CMD ["node", "src/index.js"]
+CMD ["node", "index.js"]
