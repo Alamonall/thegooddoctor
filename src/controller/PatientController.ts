@@ -21,8 +21,23 @@ export default class PatientController implements IExpressController {
   }
 
   async bookSlot(req: Request, res: Response) {
-    const { user_id: userId, doctor_id: doctorId, slot } = req.body;
-    console.debug({ msg: 'got_post_book', userId, doctorId, slot });
+    const {
+      user_id: userId,
+      doctor_id: doctorId,
+      slot: rawSlotDate,
+    } = req.body;
+    console.debug({
+      msg: 'got_post_book',
+      userId,
+      doctorId,
+      rawSlotDate,
+    });
+
+    const slot = new Date(rawSlotDate);
+
+    if (!slot.getMonth()) {
+      return res.status(400).send({ error_details: 'Invalid Date' });
+    }
 
     const user = await User.findById(userId);
 
@@ -39,12 +54,13 @@ export default class PatientController implements IExpressController {
     }
 
     const requestSlotIndex = doctor.slots.findIndex(
-      (doctorSlot) => doctorSlot.date_time === slot,
+      (doctorSlot) => doctorSlot.date_time.getTime() === slot.getTime(),
     );
 
     console.debug({
       msg: 'available_slot',
-      slot: doctor.slots[requestSlotIndex],
+      doctors_slot: doctor.slots[requestSlotIndex],
+      requested_slot_time: slot,
     });
 
     if (requestSlotIndex === -1) {
@@ -56,7 +72,7 @@ export default class PatientController implements IExpressController {
     const requestedSlot = doctor.slots[requestSlotIndex];
 
     if (!requestedSlot.is_free) {
-      return res.status(400).send({ error_details: 'Slot already booked' });
+      return res.status(400).send({ error_details: 'Slot is not free' });
     }
 
     const slotToUpdate = {
@@ -65,7 +81,10 @@ export default class PatientController implements IExpressController {
       user_id: userId,
     };
 
-    if (doctor.earliest_entry == null || doctor.earliest_entry > slot) {
+    if (
+      !doctor.earliest_entry ||
+      doctor.earliest_entry.getTime() > slot.getTime()
+    ) {
       doctor.earliest_entry = slot;
     }
 
@@ -81,7 +100,8 @@ export default class PatientController implements IExpressController {
     console.debug({ msg: 'updated_doctor', doctor });
 
     res.status(200).json({
-      message: 'We will notify you two hours before the appointment',
+      message:
+        'We will notify you one day and two hours before the appointment',
     });
   }
 }

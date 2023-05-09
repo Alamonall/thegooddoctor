@@ -1,9 +1,11 @@
 import { Queue, Worker } from 'bullmq';
 import Redis from 'ioredis';
-import { NOTIFY_USER } from './constants';
+import { DISTRIBUTE_NOTIFICATIONS, NOTIFY_USER } from './constants';
+import distributeNotifications from './jobs/distributeNotifications';
 import notifyUser from './jobs/notifyUser';
+import IJobProcessor from './types/IJobProcessor';
 
-export default class JobProcessor {
+export default class JobProcessor implements IJobProcessor {
   queues: Record<string, Queue>;
   workers: Record<string, Worker>;
   redis: Redis;
@@ -23,6 +25,27 @@ export default class JobProcessor {
 
   private init() {
     const connection = this.redis;
+    this.queues[DISTRIBUTE_NOTIFICATIONS] = new Queue(
+      DISTRIBUTE_NOTIFICATIONS,
+      {
+        defaultJobOptions: {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+        connection,
+      },
+    );
+
+    this.workers[DISTRIBUTE_NOTIFICATIONS] = new Worker(
+      DISTRIBUTE_NOTIFICATIONS,
+      async () => {
+        await distributeNotifications(this.queues);
+      },
+      {
+        connection,
+      },
+    );
+
     this.queues[NOTIFY_USER] = new Queue(NOTIFY_USER, {
       defaultJobOptions: {
         removeOnComplete: 100,
@@ -37,8 +60,8 @@ export default class JobProcessor {
   }
 
   async start() {
-    await this.queues[NOTIFY_USER].add(
-      NOTIFY_USER,
+    await this.queues[DISTRIBUTE_NOTIFICATIONS].add(
+      DISTRIBUTE_NOTIFICATIONS,
       {},
       {
         repeat: {

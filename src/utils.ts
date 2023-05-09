@@ -1,14 +1,18 @@
 import { Slot } from './types';
 
-export function generateSlots(startsWith: number, hours: number): Array<Slot> {
+export function generateSlots(
+  dayOffset: number,
+  startsWith: number,
+  hours: number,
+): Array<Slot> {
   let iteration = 0;
   const slots = [];
   console.log({ startsWith, hours });
   while (iteration != hours) {
     const hour = iteration + startsWith;
-    const date = `${new Date().getFullYear()}-${
-      new Date().getMonth() + 1
-    }-${new Date().getDate()}`;
+    const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${
+      new Date().getDate() + dayOffset * 1
+    }`;
     const firstHalfAHour = new Date(
       `${date} ${hour > 9 ? hour : `0${hour}`}:00:00`,
     );
