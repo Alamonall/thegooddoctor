@@ -82,7 +82,7 @@ export default async function notifyUser(
     job_name: job.name,
     job_id: job.id,
     doctor: updatedDoctor,
-    slots: JSON.stringify(updatedDoctor.slots),
     type,
+    updated_slot: doctor.slots[requestedSlotIndex],
   });
 }

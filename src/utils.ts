@@ -8,15 +8,12 @@ export function generateSlots(
   let iteration = 0;
   const slots = [];
   while (iteration != hours) {
-    const hour = iteration + startsWith;
-    const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${
-      new Date().getDate() + dayOffset * 1
-    }`;
-    const firstHalfAHour = new Date(
-      `${date} ${hour > 9 ? hour : `0${hour}`}:00:00`,
-    );
+    const hour = iteration + startsWith - 3;
+    const date = new Date();
+    date.setHours(hour, 0, 0);
+    const firstHalfAHour = new Date(new Date(date).toUTCString());
     const secondHalfAHour = new Date(
-      `${date} ${hour > 9 ? hour : `0${hour}`}:30:00`,
+      new Date(date.setMinutes(30)).toUTCString(),
     );
     slots.push(
       {

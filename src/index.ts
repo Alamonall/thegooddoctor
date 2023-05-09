@@ -2,18 +2,18 @@ import IORedis from 'ioredis';
 import mongoose from 'mongoose';
 import App from './App';
 import JobProcessor from './JobProcessor';
-import { apiPort, mongoseUrl, redisUri } from './config';
+import { apiPort, dbName, mongoseUrl, redisUri } from './config';
 import BullBoardController from './controller/BullBoardController';
 import PatientController from './controller/PatientController';
 import dbSeeds from './dbSeeds';
 
 (async () => {
   await mongoose.connect(mongoseUrl, {
-    dbName: 'hospital',
+    dbName: dbName,
   });
 
   mongoose.connection.on('error', (error) => {
-    console.error(error);
+    console.error({ msg: 'mongose_error', error });
   });
 
   const redis = new IORedis(redisUri, { maxRetriesPerRequest: null });

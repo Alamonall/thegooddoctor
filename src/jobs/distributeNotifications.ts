@@ -9,11 +9,12 @@ const ONE_DAY = TWO_HOUR * 12;
 export default async function distributeNotifications(
   queues: Record<string, Queue>,
 ): Promise<void> {
-  const dayAhed = new Date(Date.now() + ONE_DAY);
-  console.log({ msg: 'got_job_distribute_notifications', day_ahed: dayAhed });
+  const dayAhead = new Date();
+  dayAhead.setDate(new Date().getDate() + 1);
+  console.log({ msg: 'got_job_distribute_notifications', day_ahead: dayAhead });
   const doctors = await Doctor.find({
     earliest_entry: {
-      $lte: dayAhed,
+      $lte: dayAhead,
     },
   });
 
@@ -26,8 +27,17 @@ export default async function distributeNotifications(
       ) {
         return;
       }
-      const handicap = slot.date_time.getTime() - Date.now();
+      const slotTime = new Date(slot.date_time).getTime();
+      const handicap = slotTime - Date.now();
 
+      console.log({
+        msg: 'notification_before_2_hours',
+        handicap,
+        TWO_HOUR,
+        slotTime,
+        date_time: slot.date_time,
+        is_need: handicap >= 0 && handicap <= TWO_HOUR,
+      });
       if (handicap >= 0 && handicap <= TWO_HOUR) {
         const user = await User.findById(slot.user_id);
 
@@ -48,7 +58,14 @@ export default async function distributeNotifications(
         return;
       }
 
-      if (slot.date_time.getHours() == dayAhed.getHours()) {
+      const oneDayCap = ONE_DAY - 1000 * 60 * 60;
+
+      console.log({
+        msg: 'notification_before_1_day',
+        is_need: slotTime > oneDayCap && slotTime < ONE_DAY,
+      });
+
+      if (slotTime > oneDayCap && slotTime < ONE_DAY) {
         const user = await User.findById(slot.user_id);
 
         if (!user) {

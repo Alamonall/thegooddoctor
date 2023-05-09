@@ -35,6 +35,13 @@ curl --location --request POST 'http://localhost:3001/api/v1/patient/book' \
 }'
 ```
 
+**Request:**
+| name | type | required |
+|---|---|---|
+| doctor_id |  string | yes |
+| user_id | string | yes |
+| slot | UTC Date | yes |
+
 ## Вспомогательные материалы
 
 [Просмотр джоб](http://localhost:3001/admin/queues/).
@@ -54,5 +61,5 @@ curl --location --request POST 'http://localhost:3001/api/v1/patient/book' \
 --data-raw '{
     "doctor_id "1",
     "user_id": "1",
-    "slot": "2023-05-09 09:30:00"
+    "slot": "2023-05-09 09:30:00" 
 }'

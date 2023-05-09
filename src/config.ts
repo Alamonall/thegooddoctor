@@ -13,8 +13,4 @@ export const dbName = env
   .required()
   .asString();
 
-export const redisUri = env
-  .get('REDIS_URI')
-  .default('redis://redis:6379')
-  .required()
-  .asString();
+export const redisUri = env.get('REDIS_URI').required().asString();
