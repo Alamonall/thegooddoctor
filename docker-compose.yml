@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   main:
-    image: node:16-slim
+    image: alamonall/thegooddoctor
     environment:
       PORT: 3000
       API_PORT: 3001
@@ -17,7 +17,6 @@ services:
       - .:/code
     working_dir: /code
     ports: ['3001:3001']
-    command: 'node index.js'
     depends_on: [ mongo, mongo-express, redis ]
 
   mongo:
