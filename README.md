@@ -45,3 +45,14 @@ curl --location --request POST 'http://localhost:3001/api/v1/patient/book' \
 Для тестов можно использовать айдишник докторов и клиентов, начиная с 1. При старте в базу записывается два доктора(id: 1 и 2) с слотами с 9:00 по 21:00 и клиентами с айди 1, 2 и 3.
 
 Для наглядности джоба, проверяющая на необходимость оповещания работает с минутной периодичностью для тестов.
+
+Живой пример:
+
+```curl
+curl --location --request POST 'http://localhost:3001/api/v1/patient/book' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "doctor_id "1",
+    "user_id": "1",
+    "slot": "2023-05-09 09:30:00"
+}'
